@@ -4,16 +4,15 @@ toHide = ['', 'Tüüp', 'Asutus']
 var chart = c3.generate({
     data: {
         x : 'Inimesi',
-        ys : {
-            Mediaan: 'Mediaan',
-            Keskmine: 'Keskmine'
+        axes: {
+            Mediaan: 'y'
         },
         hide: toHide,
-        legend: {
-            hide: toHide
-        },
         url: 'data/asutuse_kaupa.csv',
         type: 'scatter'
+    },
+    legend: {
+        hide: toHide
     },
     axis: {
         x: {
