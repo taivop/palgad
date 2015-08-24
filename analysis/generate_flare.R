@@ -13,14 +13,14 @@ root$children <- character()
 
 asutused <- palgad_riik %>%
   group_by(Asutus) %>%
-  summarise(count=n()) %>%
-  top_n(20)
+  summarise(inimesi=n(), palgasumma=sum(Põhipalk)) %>%
+  arrange(desc(palgasumma))
 
 for(i in 1:nrow(asutused)) {
   asutus <- asutused[i,]
 
   asutus_obj <- list()
-  asutus_obj$size <- asutus$count
+  asutus_obj$size <- asutus$palgasumma
   asutus_obj$name <- asutus$Asutus
   
   root$children <- c(root$children, list(asutus_obj))
