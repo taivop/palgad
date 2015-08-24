@@ -7,13 +7,10 @@ library(rjson)
 palgad_riik <- read_excel("data/palgad_riik.xlsx",
                           col_types=c(rep("text", 6), "numeric", "numeric"))
 
-make_node = function(root_name, children, add_size) {
+make_node = function(root_name, children) {
   root <- list()
   root$name <- root_name
   root$children <- children
-  
-  if(!missing(add_size) && add_size)
-    root$size <- 1000
   
   return(root)
 }
@@ -39,8 +36,17 @@ asutused <- palgad_riik %>%
   summarise(inimesi=n(), palgasumma=sum(Põhipalk)) %>%
   arrange(desc(palgasumma))
 
+step_size <- 20
+
 root <- make_node("Riigiasutused", list())
-root$children <- c(root$children, to_list(asutused[1:3,]))
-root$children <- c(root$children, list(make_node("alam", to_list(asutused[4:6,]), TRUE)))
+root$children <- c(root$children, to_list(asutused[1:step_size,]))
+
+for(i in seq(step_size+1, nrow(asutused), step_size)) {
+  i_end <- min(i+step_size, nrow(asutused))
+  root$children <- c(root$children, list(make_node(
+    sprintf("Grupp %d-%d", i, i_end),
+    to_list(asutused[i:i_end,]))))
+}
 
 cat(toJSON(root), file="../data/flare2.json")
+
