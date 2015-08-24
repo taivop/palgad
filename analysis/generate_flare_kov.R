@@ -48,5 +48,5 @@ for(i in seq(step_size+1, nrow(asutused), step_size)) {
     to_list(asutused[i:i_end,]))))
 }
 
-cat(toJSON(root), file="../data/flare2.json")
+cat(toJSON(root), file="../data/flare_kov.json")
 
