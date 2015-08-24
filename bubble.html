@@ -14,7 +14,9 @@
 
     var diameter = 960,
             format = d3.format(",d"),
-            color = d3.scale.category20c();
+            color = d3.scale.linear()
+                    .domain([0, 10000, 30000, 500000, 1000000])
+                    .range(["#800026", "#fd8d3c", "#fed976", "#ffeda0", "#ffffcc"]);
 
     var bubble = d3.layout.pack()
             .sort(null)
@@ -26,7 +28,7 @@
             .attr("height", diameter)
             .attr("class", "bubble");
 
-    d3.json("data/flare2.json", function(error, root) {
+    d3.json("data/flare_kov.json", function(error, root) {
         if (error) throw error;
 
         var node = svg.selectAll(".node")
@@ -41,7 +43,7 @@
 
         node.append("circle")
                 .attr("r", function(d) { return d.r; })
-                .style("fill", function(d) { return color(d.packageName); });
+                .style("fill", function(d) { return color(d.value); });
 
         node.append("text")
                 .attr("dy", ".3em")
@@ -65,3 +67,6 @@
     d3.select(self.frameElement).style("height", diameter + "px");
 
 </script>
+
+</body>
+</html>
