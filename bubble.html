@@ -28,6 +28,11 @@
     kõigile KOVi töötajatele väljamakstava palgasumma järgi. Mullil hõljudes näed
     omavalitsuse nime ja palkade summat.</p>
 
+<div id="tooltip">
+    <p class="tooltip-title"></p>
+    <p class="tooltip-contents"></p>
+</div>
+
 <!-- From http://bl.ocks.org/mbostock/4063269 -->
 <script>
 
@@ -48,11 +53,15 @@
             .attr("class", "bubble");
 
     var tooltip = d3.select("body")
-            .append("div")
-            .style("position", "absolute")
-            .style("z-index", "10")
-            .style("visibility", "hidden")
-            .text("Tooltip");
+            .select("div#tooltip")
+
+    tooltip
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+
+    tooltip.select(".tooltip-title")
+        .text("Tooltip");
 
     d3.json("data/flare_kov.json", function(error, root) {
         if (error) throw error;
@@ -74,15 +83,23 @@
                 .text(function(d) { return d.className.substring(0, d.r / 3); });
 
         svg.selectAll("circle")
-                .on("mouseover", function(d){return tooltip
+                .on("mouseover", function(d){
+                    tooltip
                         .style("visibility", "visible")
-                        .text(d.className + ": " + format(d.value));})
-                .on("mousemove", function(d){return tooltip
-                        .style("top",
-                        (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px")
-                        .text(d.className + ": " + format(d.value));})
-                .on("mouseout", function(d){return tooltip
+                        .style("top",(d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px")
+                    tooltip.select(".tooltip-title")
+                        .text(d.className);
+                    tooltip.select(".tooltip-contents")
+                            .text("Palgad" + ": " + format(d.value));
+                })
+                .on("mousemove", function(d){
+                    tooltip
+                        .style("top",(d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px")
+                })
+                .on("mouseout", function(d){
+                    tooltip
                         .style("visibility", "hidden")});
+
     });
 
     // Returns a flattened hierarchy containing all leaf nodes under the root.
